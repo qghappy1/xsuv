@@ -1,0 +1,8 @@
+package api;
+
+message InnerMsg {
+	optional int64 tokenId			= 1;	// 玩家id
+    optional string srcServerName	= 2;	// 消息来原服
+	optional string dstServerName	= 3;	// 消息目地服	
+	optional bytes msg				= 4;	// 消息内容	
+}

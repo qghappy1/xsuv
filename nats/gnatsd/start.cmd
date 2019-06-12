@@ -1,0 +1,2 @@
+
+gnatsd -c "config.txt"

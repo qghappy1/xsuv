@@ -1,0 +1,127 @@
+#include "db.info"
+
+login
+{
+    protocol_config
+    {
+        
+    }
+
+    listen
+    {
+        ""
+        {
+            address 0.0.0.0
+            port    11361
+        }
+        ""
+        {
+            address 0.0.0.0
+            port    7361
+        }
+    }
+}
+
+verifyz
+{
+	verify_date	"2015-2-20 00:00:00.000"
+}
+
+auth
+{
+    is_login_server true
+    client_session_cert_timeout_minutes 720
+    private_key_file    "../../conf/private_key.pem"
+    disable_verify_token    0
+}
+
+v5
+{
+    app_id      10050
+    shared_key  "a0c8c324cd963415c008025b24ce43f5"
+    url         "http://m.v5game.cn/service/auth/cpcheck/"
+	platform    "v5"
+    disable_verify_token    0
+}
+
+91
+{
+	app_id      104241
+    shared_key  "1287fda02bc5d9b24c27d82edac8c5c96da6c67a7ae29df1"
+    url         "http://service.sj.91.com/usercenter/AP.aspx"
+
+    disable_verify_token    0
+}
+
+InApp;ÕÆÖÐ±¦
+{
+	app_id	"2c5d1329ac774ecf1000dc2ac027f040"
+	shared_key	"ff3b9f51ee7a98ef19f3b05b0408a541"
+	url		"http://inapp.com.tw/api/fbLogin/appLoginVerify"
+	disable_verify_token    0
+}
+
+baidu_zhushou
+{
+	app_id  1204101
+	api_key  "2uhmMIsMKlLGbeqy9HBHbjdN"
+	disable_verify_token  0
+}
+
+pp
+{
+	app_id      104241
+    shared_key  "qw"
+    url         "http://passport_i.25pp.com:8080/i"
+
+    disable_verify_token    0
+}
+
+taiguo
+{
+	app_id      20050
+    shared_key  ""
+    url         "http://if.7zeed.net/play/if-auth.php?"
+
+    disable_verify_token    0
+}
+
+uc
+{
+	cpId      	40738
+	gameId		542288
+    apiKey  	"93c24d8511d7f9a4af1fae88d09b5db4"
+    url         "http://sdk.g.uc.cn/ss"
+	serverId	3285
+    disable_verify_token    0
+	channelId	008
+}
+xiaomi
+{
+	appId      	2882303761517259260
+    appKey  	"5831725918260"
+	appSecret	"XdcRWDo1rgSBhmGna4kMFg=="
+    url         "http://mis.migc.xiaomi.com/api/biz/service/verifySession.do"
+	serverId	3285
+    disable_verify_token    0
+	channelId	007
+}
+baidu_duoku
+{
+	appid  		4342305
+	apikey  	"UNvMU1swzI2vzvd6L0rW341x"
+	appsecret 	"zt8GGuaOBXPegoBhEM0bccy6FcvTikkd"
+	url         "http://sdk.m.duoku.com/openapi/sdk/checksession"
+	disable_verify_token  0
+	channelId	011
+}
+
+baidu
+{
+	appid  		4342305
+	apikey  	"UNvMU1swzI2vzvd6L0rW341x"
+	appsecret 	"zt8GGuaOBXPegoBhEM0bccy6FcvTikkd"	
+	url         "http://querysdkapi.91.com/LoginStateQuery.ashx"
+	disable_verify_token  0
+	channelId	011
+}

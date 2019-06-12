@@ -1,0 +1,34 @@
+accounts_db
+{
+    connection_string "dbname=td_accounts host=172.20.1.201 port=5432 user=postgres password=zwkj~123"
+    thread_number       1
+    high_water_level 1200
+    low_water_level  1000
+}
+
+game_db
+{
+    connection_string "dbname=td_game_1 host=172.20.1.201 port=5432 user=postgres password=zwkj~123 keepalives_idle=5 keepalives_interval=5 keepalives_count=1"
+    thread_number       10
+    high_water_level 1200
+    low_water_level  1000
+}
+log_db
+{
+    connection_string "dbname=td_log_1 host=172.20.1.201 port=5432 user=postgres password=zwkj~123 keepalives_idle=5 keepalives_interval=5 keepalives_count=1"
+    thread_number       1
+    high_water_level 1200
+    low_water_level  1000
+}
+payment_db
+{
+    connection_string "dbname=td_payment host=172.20.1.201 port=5432 user=postgres password=zwkj~123 keepalives_idle=5 keepalives_interval=5 keepalives_count=1"
+    thread_number       1
+    high_water_level 1200
+    low_water_level  1000
+}
+
+md5key "QWZMDP598PWIEKDLSAOMX"
+
+
+
