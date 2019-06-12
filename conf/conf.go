@@ -1,4 +1,3 @@
-
 package conf
 
 import (
@@ -7,57 +6,57 @@ import (
 	"io"
 	"os"
 	"strings"
+
 	//"errors"
 	"path/filepath"
-	//"flex/log"
 )
 
 type Conf struct {
-	kvs map[string]string
+	kvs   map[string]string
 	nodes map[string][]*Conf
 }
 
 func (this *Conf) GetValue(key string) string {
 	if v, ok := this.kvs[key]; ok {
 		return v
-	}else{
+	} else {
 		return ""
 	}
 }
 
 func (this *Conf) GetConfs(key string) []*Conf {
 	if v, ok := this.nodes[key]; ok {
-		return v 
-	}else{
-		return nil 
+		return v
+	} else {
+		return nil
 	}
 }
 
 func (this *Conf) GetConf(key string) *Conf {
 	if v, ok := this.nodes[key]; ok {
 		if len(v) == 0 {
-			return nil 
-		}else{
+			return nil
+		} else {
 			return v[0]
 		}
-	}else{	
-		return nil 
+	} else {
+		return nil
 	}
 }
 
 func Read(filename string) (*Conf, error) {
 	ls, err := readFile(filename)
-	if err!=nil {
-		return nil, err 
+	if err != nil {
+		return nil, err
 	}
 	conf, err := analysis(ls)
-	return conf, err 
+	return conf, err
 }
 
 func newConf() *Conf {
 	return &Conf{
-		kvs : make(map[string]string),
-		nodes : make(map[string][]*Conf),
+		kvs:   make(map[string]string),
+		nodes: make(map[string][]*Conf),
 	}
 }
 
@@ -67,19 +66,19 @@ func getPath(fulleFilename string) string {
 	if i == -1 {
 		i = strings.LastIndex(fulleFilename, "/")
 	}
-	return fulleFilename[:i+1] 
+	return fulleFilename[:i+1]
 }
 
 func readFile(filename string) ([]string, error) {
 	f, err := os.Open(filename)
 	defer f.Close()
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 	filepath := getPath(filename)
 	reader := bufio.NewReader(f)
 	lines := make([]string, 0)
-	for{
+	for {
 		line, err := reader.ReadString('\n')
 		if line != "" {
 			line = strings.Trim(line, " ")
@@ -95,46 +94,40 @@ func readFile(filename string) ([]string, error) {
 				line = strings.Trim(line, "\t")
 				line = strings.Trim(line, "\"")
 				//fmt.Println(filepath+line)
-				partlines, err := readFile(filepath+line)
+				partlines, err := readFile(filepath + line)
 				if err != nil {
-					return nil, err 
+					return nil, err
 				}
 				lines = append(lines, partlines...)
-			} else{
-				bjmp := false 
+			} else {
+				bjmp := false
 				for i, c := range line {
 					if c == ';' {
 						lines = append(lines, line[0:i])
-						bjmp = true 
+						bjmp = true
 						break
 					}
 				}
 				if !bjmp {
 					lines = append(lines, line)
-				}	
+				}
 			}
 		}
 		if err == io.EOF {
 			break
 		}
 	}
-	return lines, nil 
+	return lines, nil
 }
 
 func analysis(lines []string) (*Conf, error) {
 	conf := newConf()
 	scan := newScanner(conf)
-	for i:=0; i<len(lines); i++{
+	for i := 0; i < len(lines); i++ {
 		//fmt.Println(lines[i])
-		if err := scan.step([]byte(lines[i]), scan); err!=nil {
-			return nil, err 
+		if err := scan.step([]byte(lines[i]), scan); err != nil {
+			return nil, err
 		}
-	}	
-	return conf, nil  
+	}
+	return conf, nil
 }
-
-
-
-
-
-

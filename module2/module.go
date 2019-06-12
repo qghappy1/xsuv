@@ -1,20 +1,21 @@
 package module2
 
 import (
-	"fmt"
-	"xsuv/nats"
-	"xsuv/util/log"
 	"encoding/binary"
-	"xsuv/etcdv3/natslb"
+	"fmt"
+
+	"github.com/qghappy1/xsuv/etcdv3/natslb"
+	"github.com/qghappy1/xsuv/nats"
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 const (
-	ModuleMsgType = 0		// 无rpc模式
-	ModuleRpcType = 1		// 无msg模式
-	ModuleRpcMsgType = 2	// msg与rpc模式
+	ModuleMsgType    = 0 // 无rpc模式
+	ModuleRpcType    = 1 // 无msg模式
+	ModuleRpcMsgType = 2 // msg与rpc模式
 
-	ModuleLbHash = 0		// 一致性策略
-	ModuleLbRound = 1		// 循环策略
+	ModuleLbHash  = 0 // 一致性策略
+	ModuleLbRound = 1 // 循环策略
 )
 
 type IModule interface {
@@ -31,14 +32,14 @@ type IModule interface {
 }
 
 //
-type  BaseModule struct {
-	name string
-	rpcName string
-	nat *nats.Nats
-	c *natslb.Client
-	lb *natslb.NatsLb
+type BaseModule struct {
+	name         string
+	rpcName      string
+	nat          *nats.Nats
+	c            *natslb.Client
+	lb           *natslb.NatsLb
 	otherModules map[string]natslb.IWatcher
-	subModule IModule
+	subModule    IModule
 }
 
 // subModule主要是获取子类的OnHandle实现
@@ -54,12 +55,20 @@ func NewBaseModule(moduleType string, moduleName string, msgType int, nat *nats.
 	m.subModule = subModule
 	switch msgType {
 	case ModuleMsgType:
-		if err := m.nat.Subscribe(m.name, m.msgHandle); err != nil { log.FatalDepth(2, "%v", err) }
+		if err := m.nat.Subscribe(m.name, m.msgHandle); err != nil {
+			log.FatalDepth(2, "%v", err)
+		}
 	case ModuleRpcType:
-		if err := m.nat.Register(m.rpcName, m.rpcHandle); err != nil { log.FatalDepth(2, "%v", err) }
+		if err := m.nat.Register(m.rpcName, m.rpcHandle); err != nil {
+			log.FatalDepth(2, "%v", err)
+		}
 	case ModuleRpcMsgType:
-		if err := m.nat.Subscribe(m.name, m.msgHandle); err != nil { log.FatalDepth(2, "%v", err) }
-		if err := m.nat.Register(m.rpcName, m.rpcHandle); err != nil { log.FatalDepth(2, "%v", err) }
+		if err := m.nat.Subscribe(m.name, m.msgHandle); err != nil {
+			log.FatalDepth(2, "%v", err)
+		}
+		if err := m.nat.Register(m.rpcName, m.rpcHandle); err != nil {
+			log.FatalDepth(2, "%v", err)
+		}
 	default:
 		log.FatalDepth(2, "msgType:%v err")
 	}
@@ -68,7 +77,7 @@ func NewBaseModule(moduleType string, moduleName string, msgType int, nat *nats.
 
 func (m *BaseModule) OnInit() {}
 
-func (m *BaseModule) OnMsgHandle(roleID int64, id uint16, msg []byte) { }
+func (m *BaseModule) OnMsgHandle(roleID int64, id uint16, msg []byte) {}
 
 func (m *BaseModule) OnRpcHandle(roleID int64, id uint16, msg []byte) []byte { return nil }
 
@@ -94,7 +103,9 @@ func (m *BaseModule) Name() string { return m.name }
 func (m *BaseModule) Run(closeSig chan bool) {}
 
 func (m *BaseModule) SendMsg(moduleType string, roleID int64, msgID uint16, msg []byte) bool {
-	if len(msg) == 0 { return false }
+	if len(msg) == 0 {
+		return false
+	}
 	w, ok := m.otherModules[moduleType]
 	if !ok {
 		log.ErrorDepth(2, "not connect module:%v", moduleType)
@@ -122,7 +133,9 @@ func (m *BaseModule) SendMsg(moduleType string, roleID int64, msgID uint16, msg 
 }
 
 func (m *BaseModule) SendMsgSpecial(moduleName string, roleID int64, msgID uint16, msg []byte) bool {
-	if len(msg) == 0 { return false }
+	if len(msg) == 0 {
+		return false
+	}
 	data := make([]byte, 0)
 	srole := make([]byte, 8)
 	smsgid := make([]byte, 2)
@@ -140,7 +153,9 @@ func (m *BaseModule) SendMsgSpecial(moduleName string, roleID int64, msgID uint1
 }
 
 func (m *BaseModule) RpcMsg(moduleType string, roleID int64, msgID uint16, msg []byte) []byte {
-	if len(msg) == 0 { return nil }
+	if len(msg) == 0 {
+		return nil
+	}
 	w, ok := m.otherModules[moduleType]
 	if !ok {
 		log.ErrorDepth(2, "not connect module:%v", moduleType)
@@ -169,12 +184,14 @@ func (m *BaseModule) RpcMsg(moduleType string, roleID int64, msgID uint16, msg [
 
 func (m *BaseModule) msgHandle(data []byte) []byte {
 	defer log.ErrorPanic()
-	if len(data)<10 { return []byte("") }
+	if len(data) < 10 {
+		return []byte("")
+	}
 	roleID := int64(binary.BigEndian.Uint64(data))
 	msgID := binary.BigEndian.Uint16(data[8:])
 	if m.subModule != nil {
 		m.subModule.OnMsgHandle(roleID, msgID, data[10:])
-	}else{
+	} else {
 		log.Error("module:%v handle nil", m.name)
 	}
 	return nil
@@ -182,14 +199,15 @@ func (m *BaseModule) msgHandle(data []byte) []byte {
 
 func (m *BaseModule) rpcHandle(data []byte) []byte {
 	defer log.ErrorPanic()
-	if len(data)<10 { return []byte("") }
+	if len(data) < 10 {
+		return []byte("")
+	}
 	roleID := int64(binary.BigEndian.Uint64(data))
 	msgID := binary.BigEndian.Uint16(data[8:])
 	if m.subModule != nil {
 		return m.subModule.OnRpcHandle(roleID, msgID, data[10:])
-	}else{
+	} else {
 		log.Error("module:%v handle nil", m.name)
 	}
 	return []byte("")
 }
-

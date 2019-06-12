@@ -2,18 +2,19 @@ package network
 
 import (
 	"net"
-	"xsuv/util/log"
+
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 var next = int64(1)
 
 type Gate struct {
-	MaxConnNum		int
-	PendingWriteNum	int
-	MaxMsgLen		uint32
-	Handle			func([]byte, GateAgent) bool
-	OnCloseAgent	func(GateAgent)
-	OnNewAgent		func(GateAgent)
+	MaxConnNum      int
+	PendingWriteNum int
+	MaxMsgLen       uint32
+	Handle          func([]byte, GateAgent) bool
+	OnCloseAgent    func(GateAgent)
+	OnNewAgent      func(GateAgent)
 
 	// tcp
 	TCPAddr      string
@@ -52,7 +53,7 @@ func (gate *Gate) Run(closeSig chan bool) {
 func (gate *Gate) OnDestroy() {}
 
 type agent struct {
-	id 		int64
+	id       int64
 	conn     Conn
 	gate     *Gate
 	userData interface{}
@@ -73,7 +74,7 @@ func (a *agent) Run() {
 	}
 }
 
-func (a *agent) ID() int64{
+func (a *agent) ID() int64 {
 	return a.id
 }
 

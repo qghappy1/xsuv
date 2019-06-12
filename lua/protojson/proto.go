@@ -1,20 +1,20 @@
-
 package protojson
 
 import (
+	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"reflect"
-	"encoding/json"
-	"xsuv/util/log"
-	"encoding/binary"
 	json2 "xsuv/lua/json"
-	"github.com/yuin/gopher-lua"
+
 	proto2 "github.com/golang/protobuf/proto"
+	"github.com/qghappy1/xsuv/util/log"
+	"github.com/yuin/gopher-lua"
 )
 
 var (
 	api = map[string]lua.LGFunction{
-		"marshal": tableMarshalBytes,
+		"marshal":   tableMarshalBytes,
 		"unmarshal": unmarshalToTable,
 	}
 	msgInfo = make(map[uint16]reflect.Type)
@@ -65,7 +65,7 @@ func ProtoToJson(id uint16, data []byte) ([]byte, error) {
 	return data, nil
 }
 
-func tableMarshalBytes(L *lua.LState) int{
+func tableMarshalBytes(L *lua.LState) int {
 	id := uint16(L.CheckInt(1))
 	tbl := L.CheckTable(2)
 	msgType, ok := msgInfo[id]

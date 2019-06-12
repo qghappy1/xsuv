@@ -1,13 +1,14 @@
 package network
 
 import (
-	"io"
-	"fmt"
-	"time"
-	"math"
-	"errors"
 	"encoding/binary"
-	"xsuv/util/log"
+	"errors"
+	"fmt"
+	"io"
+	"math"
+	"time"
+
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 // --------------
@@ -66,7 +67,7 @@ func (p *MsgParser) SetByteOrder(littleEndian bool) {
 
 // goroutine safe
 func (p *MsgParser) Read(conn *TCPConn) ([]byte, error) {
-	conn.conn.SetDeadline(time.Now().Add(180*time.Second))
+	conn.conn.SetDeadline(time.Now().Add(180 * time.Second))
 	var b [4]byte
 	bufMsgLen := b[:p.lenMsgLen]
 

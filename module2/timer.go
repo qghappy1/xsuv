@@ -2,7 +2,8 @@ package module2
 
 import (
 	"time"
-	"xsuv/util/log"
+
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 // one dispatcher per goroutine (goroutine not safe)

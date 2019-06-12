@@ -1,18 +1,18 @@
-
 package nats
 
 import (
-	"time"
 	"strings"
-	"xsuv/util/log"
-	"github.com/nats-io/go-nats"	
+	"time"
+
+	"github.com/nats-io/go-nats"
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 type Nats struct {
-	conn	*nats.Conn
+	conn *nats.Conn
 }
 
-func NewNats(urls, username, password string) (*Nats) {
+func NewNats(urls, username, password string) *Nats {
 	var err error
 	p := new(Nats)
 	p.conn, err = connectNats(urls, username, password)
@@ -25,7 +25,7 @@ func NewNats(urls, username, password string) (*Nats) {
 }
 
 func (this *Nats) Close() {
-	this.conn.Close()	
+	this.conn.Close()
 }
 
 // 发布
@@ -43,8 +43,8 @@ func (this *Nats) Call(subj string, arg []byte, timeout int) ([]byte, error) {
 	return msg.Data, err
 }
 
-// 
-func connectNats(urls, username, password string) (*nats.Conn, error){
+//
+func connectNats(urls, username, password string) (*nats.Conn, error) {
 	opts := nats.DefaultOptions
 	opts.Servers = strings.Split(urls, ",")
 	for i, s := range opts.Servers {
@@ -61,27 +61,18 @@ func connectNats(urls, username, password string) (*nats.Conn, error){
 }
 
 // 订阅
-func (this *Nats) Subscribe(subj string, handle func([]byte)[]byte) error {
-	_, err := this.conn.Subscribe(subj, func(msg *nats.Msg){
+func (this *Nats) Subscribe(subj string, handle func([]byte) []byte) error {
+	_, err := this.conn.Subscribe(subj, func(msg *nats.Msg) {
 		handle(msg.Data)
 	})
 	return err
 }
 
 // rpc
-func (this *Nats) Register(subj string, handle func([]byte)[]byte) error {
-	_, err := this.conn.Subscribe(subj, func(msg *nats.Msg){
-		ret := handle(msg.Data)	
+func (this *Nats) Register(subj string, handle func([]byte) []byte) error {
+	_, err := this.conn.Subscribe(subj, func(msg *nats.Msg) {
+		ret := handle(msg.Data)
 		this.conn.Publish(msg.Reply, ret)
 	})
 	return err
 }
-
-
-
-
-
-
-
-
-

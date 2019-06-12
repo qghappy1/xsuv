@@ -1,12 +1,12 @@
-
 package proto
 
 import (
 	"fmt"
 	"testing"
-	"xsuv/lua/luatest"
-	"github.com/yuin/gopher-lua"
+
 	proto2 "github.com/golang/protobuf/proto"
+	"github.com/qghappy1/xsuv/lua/luatest"
+	"github.com/yuin/gopher-lua"
 )
 
 func TestLua(t *testing.T) {

@@ -1,10 +1,10 @@
-
 package netAgent
 
 import (
-	"xsuv/network"
-	"github.com/yuin/gopher-lua"
 	"fmt"
+
+	"github.com/qghappy1/xsuv/network"
+	"github.com/yuin/gopher-lua"
 )
 
 const (
@@ -23,9 +23,9 @@ func load(L *lua.LState) int {
 }
 
 var luaGateAgentNameMethods = map[string]lua.LGFunction{
-	"id": gateAgentID,
-	"sendmsg": gateAgentSendMsg,
-	"close": gateAgentClose,
+	"id":         gateAgentID,
+	"sendmsg":    gateAgentSendMsg,
+	"close":      gateAgentClose,
 	"remoteaddr": gateAgentRemoteAddr,
 }
 
@@ -35,7 +35,7 @@ func registerGateAgentType(L *lua.LState) {
 	L.SetField(mt, "__index", L.SetFuncs(L.NewTable(), luaGateAgentNameMethods))
 }
 
-func GetLuaGateAgent(L *lua.LState, g network.GateAgent) *lua.LUserData{
+func GetLuaGateAgent(L *lua.LState, g network.GateAgent) *lua.LUserData {
 	ud := L.NewUserData()
 	ud.Value = g
 	L.SetMetatable(ud, L.GetTypeMetatable(gateAgentTypeName))

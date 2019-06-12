@@ -3,8 +3,9 @@ package module
 import (
 	"fmt"
 	"time"
-	"xsuv/nats"
-	"xsuv/etcdv3/natslb"
+
+	"github.com/qghappy1/xsuv/etcdv3/natslb"
+	"github.com/qghappy1/xsuv/nats"
 )
 
 type gameModuleExample struct {
@@ -25,7 +26,7 @@ func (m *loginModuleExample) OnHandle(src string, roleID int64, id uint16, msg [
 	return []byte(fmt.Sprint("i am ", m.Name()))
 }
 
-func exampleModule(){
+func exampleModule() {
 	natUrls := "nats://111.230.46.154:4242"
 	natUsername := "ft2018"
 	natPassword := "T0pS3cr3t"

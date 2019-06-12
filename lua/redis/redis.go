@@ -1,8 +1,7 @@
-
 package redis
 
 import (
-	redis2 "xsuv/redis"
+	redis2 "github.com/qghappy1/xsuv/redis"
 	"github.com/yuin/gopher-lua"
 )
 
@@ -11,39 +10,39 @@ var api = map[string]lua.LGFunction{
 }
 
 var luaRedisMethods = map[string]lua.LGFunction{
-	"is_exist": exists,
-	"del": del,
-	"type": type_,
-	"keys": keys,
+	"is_exist":   exists,
+	"del":        del,
+	"type":       type_,
+	"keys":       keys,
 	"random_key": randomKey,
-	"rename": rename,
-	"db_size": dbSize,
-	"expire": expire,
-	"ttl": ttl,
-	"move": move,
-	"flush": flush,
-	"set": set,
-	"get": get,
-	"getset": getset,
-	"mget": mget,
-	"setnx": setnx,
-	"setex": setex,
-	"mset": mset,
-	"msetnx": msetnx,
-	"incr": incr,
-	"incrby": incrby,
-	"decr": decr,
-	"decrby": decrby,
-	"append": append_,
-	"hset": hset,
-	"hget": hget,
-	"hmget": hmget,
-	"hincrby": hincrby,
-	"hexists": hexists,
-	"hdel": hdel,
-	"hlen": hlen,
-	"hkeys": hkeys,
-	"hgetall": hgetall,
+	"rename":     rename,
+	"db_size":    dbSize,
+	"expire":     expire,
+	"ttl":        ttl,
+	"move":       move,
+	"flush":      flush,
+	"set":        set,
+	"get":        get,
+	"getset":     getset,
+	"mget":       mget,
+	"setnx":      setnx,
+	"setex":      setex,
+	"mset":       mset,
+	"msetnx":     msetnx,
+	"incr":       incr,
+	"incrby":     incrby,
+	"decr":       decr,
+	"decrby":     decrby,
+	"append":     append_,
+	"hset":       hset,
+	"hget":       hget,
+	"hmget":      hmget,
+	"hincrby":    hincrby,
+	"hexists":    hexists,
+	"hdel":       hdel,
+	"hlen":       hlen,
+	"hkeys":      hkeys,
+	"hgetall":    hgetall,
 }
 
 const (
@@ -62,7 +61,7 @@ func load(L *lua.LState) int {
 	return 1
 }
 
-func RegisterRedisValue(L *lua.LState, name string, db *redis2.RedisDB)  {
+func RegisterRedisValue(L *lua.LState, name string, db *redis2.RedisDB) {
 	ud := L.NewUserData()
 	ud.Value = db
 	ud.Metatable = L.NewTypeMetatable(name)
@@ -79,9 +78,9 @@ func registerRedisDBType(L *lua.LState) {
 	L.SetField(mt, "__index", L.SetFuncs(L.NewTable(), luaRedisMethods))
 }
 
-func openRedis(L *lua.LState) int{
+func openRedis(L *lua.LState) int {
 	connectStr := L.CheckString(1)
-	db, err := redis2.NewRedisDB(connectStr);
+	db, err := redis2.NewRedisDB(connectStr)
 	if err != nil {
 		L.Push(lua.LNil)
 		L.Push(lua.LString(err.Error()))
@@ -103,7 +102,7 @@ func checkRedis(L *lua.LState) *redis2.RedisDB {
 	return nil
 }
 
-func exists(L *lua.LState) int{
+func exists(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	ok, err := p.Exists(key)
@@ -116,7 +115,7 @@ func exists(L *lua.LState) int{
 	return 1
 }
 
-func del(L *lua.LState) int{
+func del(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	ok, err := p.Del(key)
@@ -129,7 +128,7 @@ func del(L *lua.LState) int{
 	return 1
 }
 
-func type_(L *lua.LState) int{
+func type_(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	s, err := p.Type(key)
@@ -142,7 +141,7 @@ func type_(L *lua.LState) int{
 	return 1
 }
 
-func randomKey(L *lua.LState) int{
+func randomKey(L *lua.LState) int {
 	p := checkRedis(L)
 	s, err := p.Randomkey()
 	if err != nil {
@@ -154,7 +153,7 @@ func randomKey(L *lua.LState) int{
 	return 1
 }
 
-func rename(L *lua.LState) int{
+func rename(L *lua.LState) int {
 	p := checkRedis(L)
 	src := L.CheckString(2)
 	dst := L.CheckString(3)
@@ -167,7 +166,7 @@ func rename(L *lua.LState) int{
 	return 1
 }
 
-func dbSize(L *lua.LState) int{
+func dbSize(L *lua.LState) int {
 	p := checkRedis(L)
 	size, err := p.Dbsize()
 	if err != nil {
@@ -179,7 +178,7 @@ func dbSize(L *lua.LState) int{
 	return 1
 }
 
-func expire(L *lua.LState) int{
+func expire(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	time := L.CheckInt64(3)
@@ -193,7 +192,7 @@ func expire(L *lua.LState) int{
 	return 1
 }
 
-func ttl(L *lua.LState) int{
+func ttl(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	time, err := p.Ttl(key)
@@ -206,7 +205,7 @@ func ttl(L *lua.LState) int{
 	return 1
 }
 
-func move(L *lua.LState) int{
+func move(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	dbnum := L.CheckInt(3)
@@ -220,7 +219,7 @@ func move(L *lua.LState) int{
 	return 1
 }
 
-func flush(L *lua.LState) int{
+func flush(L *lua.LState) int {
 	p := checkRedis(L)
 	all := L.CheckBool(2)
 	err := p.Flush(all)
@@ -232,7 +231,7 @@ func flush(L *lua.LState) int{
 	return 1
 }
 
-func set(L *lua.LState) int{
+func set(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	value := L.CheckString(3)
@@ -245,7 +244,7 @@ func set(L *lua.LState) int{
 	return 1
 }
 
-func get(L *lua.LState) int{
+func get(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	s, err := p.Get(key)
@@ -258,7 +257,7 @@ func get(L *lua.LState) int{
 	return 1
 }
 
-func getset(L *lua.LState) int{
+func getset(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	val := L.CheckString(3)
@@ -272,12 +271,12 @@ func getset(L *lua.LState) int{
 	return 1
 }
 
-func mget(L *lua.LState) int{
+func mget(L *lua.LState) int {
 	p := checkRedis(L)
 	keys := L.CheckTable(2)
 	arg := make([]string, 0)
 	max := keys.MaxN()
-	for i := 1; i<=max; i++ {
+	for i := 1; i <= max; i++ {
 		v := keys.RawGetInt(i)
 		if s, ok := v.(lua.LString); ok {
 			arg = append(arg, string(s))
@@ -297,7 +296,7 @@ func mget(L *lua.LState) int{
 	return 1
 }
 
-func setnx(L *lua.LState) int{
+func setnx(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	val := L.CheckString(3)
@@ -311,7 +310,7 @@ func setnx(L *lua.LState) int{
 	return 1
 }
 
-func setex(L *lua.LState) int{
+func setex(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	time := L.CheckInt64(3)
@@ -325,11 +324,11 @@ func setex(L *lua.LState) int{
 	return 1
 }
 
-func mset(L *lua.LState) int{
+func mset(L *lua.LState) int {
 	p := checkRedis(L)
 	arg := L.CheckTable(2)
 	mapping := make(map[string][]byte)
-	arg.ForEach(func(key, val lua.LValue){
+	arg.ForEach(func(key, val lua.LValue) {
 		k, ok := key.(lua.LString)
 		v, ok1 := val.(lua.LString)
 		if ok && ok1 {
@@ -345,11 +344,11 @@ func mset(L *lua.LState) int{
 	return 1
 }
 
-func msetnx(L *lua.LState) int{
+func msetnx(L *lua.LState) int {
 	p := checkRedis(L)
 	arg := L.CheckTable(2)
 	mapping := make(map[string][]byte)
-	arg.ForEach(func(key, val lua.LValue){
+	arg.ForEach(func(key, val lua.LValue) {
 		k, ok := key.(lua.LString)
 		v, ok1 := val.(lua.LString)
 		if ok && ok1 {
@@ -366,7 +365,7 @@ func msetnx(L *lua.LState) int{
 	return 1
 }
 
-func incr(L *lua.LState) int{
+func incr(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	val, err := p.Incr(key)
@@ -379,7 +378,7 @@ func incr(L *lua.LState) int{
 	return 1
 }
 
-func incrby(L *lua.LState) int{
+func incrby(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	val := L.CheckInt64(3)
@@ -393,7 +392,7 @@ func incrby(L *lua.LState) int{
 	return 1
 }
 
-func decr(L *lua.LState) int{
+func decr(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	val, err := p.Decr(key)
@@ -406,7 +405,7 @@ func decr(L *lua.LState) int{
 	return 1
 }
 
-func decrby(L *lua.LState) int{
+func decrby(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	val := L.CheckInt64(3)
@@ -420,7 +419,7 @@ func decrby(L *lua.LState) int{
 	return 1
 }
 
-func append_(L *lua.LState) int{
+func append_(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	val := L.CheckString(3)
@@ -433,7 +432,7 @@ func append_(L *lua.LState) int{
 	return 1
 }
 
-func hset(L *lua.LState) int{
+func hset(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	field := L.CheckString(3)
@@ -448,7 +447,7 @@ func hset(L *lua.LState) int{
 	return 1
 }
 
-func hget(L *lua.LState) int{
+func hget(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	field := L.CheckString(3)
@@ -462,13 +461,13 @@ func hget(L *lua.LState) int{
 	return 1
 }
 
-func hmget(L *lua.LState) int{
+func hmget(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	t := L.CheckTable(3)
 	arg := make([]string, 0)
 	max := t.MaxN()
-	for i := 1; i<=max; i++ {
+	for i := 1; i <= max; i++ {
 		v := t.RawGetInt(i)
 		if s, ok := v.(lua.LString); ok {
 			arg = append(arg, string(s))
@@ -488,7 +487,7 @@ func hmget(L *lua.LState) int{
 	return 1
 }
 
-func hincrby(L *lua.LState) int{
+func hincrby(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	field := L.CheckString(3)
@@ -503,7 +502,7 @@ func hincrby(L *lua.LState) int{
 	return 1
 }
 
-func hexists(L *lua.LState) int{
+func hexists(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	field := L.CheckString(3)
@@ -517,7 +516,7 @@ func hexists(L *lua.LState) int{
 	return 1
 }
 
-func hdel(L *lua.LState) int{
+func hdel(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	field := L.CheckString(3)
@@ -531,7 +530,7 @@ func hdel(L *lua.LState) int{
 	return 1
 }
 
-func hlen(L *lua.LState) int{
+func hlen(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	num, err := p.Hlen(key)
@@ -544,7 +543,7 @@ func hlen(L *lua.LState) int{
 	return 1
 }
 
-func hkeys(L *lua.LState) int{
+func hkeys(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	keys, err := p.Hkeys(key)
@@ -561,7 +560,7 @@ func hkeys(L *lua.LState) int{
 	return 1
 }
 
-func hgetall(L *lua.LState) int{
+func hgetall(L *lua.LState) int {
 	p := checkRedis(L)
 	key := L.CheckString(2)
 	mapping := make(map[string]string)
@@ -579,7 +578,7 @@ func hgetall(L *lua.LState) int{
 	return 1
 }
 
-func keys(L *lua.LState) int{
+func keys(L *lua.LState) int {
 	p := checkRedis(L)
 	pattern := L.CheckString(2)
 	res, err := p.Keys(pattern)

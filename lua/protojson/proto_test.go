@@ -1,13 +1,12 @@
-
 package protojson
 
 import (
 	"testing"
-	"xsuv/lua/luatest"
-	"github.com/yuin/gopher-lua"
-	json2 "github.com/layeh/gopher-json"
-)
 
+	json2 "github.com/layeh/gopher-json"
+	"github.com/qghappy1/xsuv/lua/luatest"
+	"github.com/yuin/gopher-lua"
+)
 
 func TestLua(t *testing.T) {
 	L := lua.NewState()

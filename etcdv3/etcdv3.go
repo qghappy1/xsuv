@@ -1,11 +1,12 @@
 package etcdv3
 
 import (
+	"context"
 	"sync"
 	"time"
-	"context"
-	"xsuv/util/log"
+
 	"github.com/coreos/etcd/clientv3"
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 type Client = clientv3.Client
@@ -20,13 +21,13 @@ func NewKv(k, v string) *Kv {
 }
 
 type EtcdC struct {
-	Path string
-	mtx *sync.RWMutex
-	nodes map[string]string
+	Path   string
+	mtx    *sync.RWMutex
+	nodes  map[string]string
 	client *clientv3.Client
 }
 
-func NewEtcdV3(addrs []string, path string) *EtcdC{
+func NewEtcdV3(addrs []string, path string) *EtcdC {
 	this := new(EtcdC)
 	this.Path = path
 	this.mtx = &sync.RWMutex{}
@@ -63,7 +64,7 @@ func (this *EtcdC) put(resp *clientv3.LeaseGrantResponse, key, val string, timeo
 	return true
 }
 
-func (this *EtcdC) Put(key, val string, timeout int) bool{
+func (this *EtcdC) Put(key, val string, timeout int) bool {
 	if timeout > 1 {
 		resp, err := this.client.Grant(context.TODO(), int64(timeout))
 		if err != nil {
@@ -76,7 +77,7 @@ func (this *EtcdC) Put(key, val string, timeout int) bool{
 }
 
 func (this *EtcdC) PutLoop(timeout int, kvs ...*Kv) {
-	if timeout>1 {
+	if timeout > 1 {
 		resp, err := this.client.Grant(context.TODO(), int64(timeout))
 		if err != nil {
 			log.Error(err.Error())
@@ -85,27 +86,27 @@ func (this *EtcdC) PutLoop(timeout int, kvs ...*Kv) {
 		for _, kv := range kvs {
 			this.put(resp, kv.K, kv.V, timeout)
 		}
-		go func(){
+		go func() {
 			ch, err1 := this.client.KeepAlive(context.TODO(), resp.ID)
 			if err1 != nil {
 				log.Error(err1.Error())
 				return
 			}
 			<-ch
-			for{
+			for {
 				for _, kv := range kvs {
 					this.put(resp, kv.K, kv.V, timeout)
 				}
-				time.Sleep(time.Duration(timeout-1)*time.Second)
+				time.Sleep(time.Duration(timeout-1) * time.Second)
 			}
 		}()
-	}else{
+	} else {
 		log.Fatal("timeout must greater then 1")
 	}
 }
 
 func (this *EtcdC) Watch() {
-	go func(){
+	go func() {
 		rch := this.client.Watch(context.Background(), this.Path)
 		for wresp := range rch {
 			for _, ev := range wresp.Events {
@@ -127,7 +128,7 @@ func (this *EtcdC) Watch() {
 }
 
 func (this *EtcdC) watchTest() {
-	go func(){
+	go func() {
 		rch := this.client.Watch(context.Background(), this.Path)
 		for wresp := range rch {
 			for _, ev := range wresp.Events {
@@ -160,7 +161,7 @@ func (this *EtcdC) Get(key string) map[string]string {
 	return m
 }
 
-func ConnectEtcdV3(addrs []string, path string) *Client{
+func ConnectEtcdV3(addrs []string, path string) *Client {
 	client, err := clientv3.New(clientv3.Config{
 		Endpoints:   addrs,
 		DialTimeout: 5 * time.Second,
@@ -171,13 +172,12 @@ func ConnectEtcdV3(addrs []string, path string) *Client{
 	return client
 }
 
-
-func Get(c *Client, key string, timeout int) string{
+func Get(c *Client, key string, timeout int) string {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout))
 	resp, err := c.Get(ctx, key)
 	cancel()
 	if err != nil {
-		log.ErrorDepth(2,"%v", err)
+		log.ErrorDepth(2, "%v", err)
 		return ""
 	}
 	for _, ev := range resp.Kvs {
@@ -189,7 +189,7 @@ func Get(c *Client, key string, timeout int) string{
 func Put(c *Client, key, val string) bool {
 	_, err := c.Put(context.TODO(), key, val)
 	if err != nil {
-		log.ErrorDepth(2,err.Error())
+		log.ErrorDepth(2, err.Error())
 		return false
 	}
 	return true

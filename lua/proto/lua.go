@@ -1,21 +1,20 @@
-
 package proto
 
 import (
+	"encoding/binary"
 	"fmt"
 	"reflect"
-	"xsuv/util/log"
-	"encoding/binary"
-	"github.com/yuin/gopher-lua"
-	"github.com/layeh/gopher-luar"
-	proto2 "github.com/golang/protobuf/proto"
 
+	proto2 "github.com/golang/protobuf/proto"
+	"github.com/layeh/gopher-luar"
+	"github.com/qghappy1/xsuv/util/log"
+	"github.com/yuin/gopher-lua"
 )
 
 var (
 	RegisterValueToLua = luar.New
-	msgInfo = make(map[uint16]reflect.Type)
-	api = map[string]lua.LGFunction{
+	msgInfo            = make(map[uint16]reflect.Type)
+	api                = map[string]lua.LGFunction{
 		"marshal": protoMarshal,
 	}
 )
@@ -52,11 +51,11 @@ func MsgToLua(L *lua.LState, id uint16, buffer []byte) (lua.LValue, error) {
 	return luar.New(L, msg), nil
 }
 
-func RegisterTypeToLua(L *lua.LState, tName string, v interface{}){
+func RegisterTypeToLua(L *lua.LState, tName string, v interface{}) {
 	L.SetGlobal(tName, luar.NewType(L, v))
 }
 
-func protoMarshal(L *lua.LState) int{
+func protoMarshal(L *lua.LState) int {
 	id := uint16(L.CheckInt(1))
 	ud := L.CheckUserData(2)
 	msg, ok := ud.Value.(proto2.Message)

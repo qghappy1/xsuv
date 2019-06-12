@@ -1,17 +1,15 @@
-
 package module
 
 import (
 	"fmt"
-	"time"
 	"testing"
-	"xsuv/nats"
-	"xsuv/module2"
-	"xsuv/etcdv3/natslb"
+	"time"
+
+	"github.com/qghappy1/xsuv/etcdv3/natslb"
+	"github.com/qghappy1/xsuv/module2"
+	"github.com/qghappy1/xsuv/nats"
 	"github.com/yuin/gopher-lua"
 )
-
-
 
 type gameModuleExample struct {
 	*module2.BaseModule
@@ -36,7 +34,7 @@ func (m *loginModuleExample) OnHandle(src string, roleID int64, id uint16, msg [
 	return []byte(fmt.Sprint("i am ", m.Name()))
 }
 
-func exampleModule(L *lua.LState){
+func exampleModule(L *lua.LState) {
 	natUrls := "nats://111.230.46.154:4242"
 	natUsername := "ft2018"
 	natPassword := "T0pS3cr3t"

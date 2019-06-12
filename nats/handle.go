@@ -1,13 +1,14 @@
 package nats
 
 import (
-	"xsuv/nats/api"
-	"xsuv/util/log"
 	"encoding/binary"
+
 	"github.com/golang/protobuf/proto"
+	"github.com/qghappy1/xsuv/nats/api"
+	"github.com/qghappy1/xsuv/util/log"
 )
 
-type IHandle interface{
+type IHandle interface {
 	Register(id uint16, f interface{})
 	Handle(data []byte) []byte
 }
@@ -52,7 +53,7 @@ type IHandle interface{
 //}
 
 // nats publish
-func NatsPublish(pub *Nats, dstServer, srcServer string, roleID int64, data []byte) (error) {
+func NatsPublish(pub *Nats, dstServer, srcServer string, roleID int64, data []byte) error {
 	iMsg := new(api.InnerMsg)
 	iMsg.SetSrcServerName(srcServer)
 	iMsg.SetDstServerName(dstServer)
@@ -64,7 +65,7 @@ func NatsPublish(pub *Nats, dstServer, srcServer string, roleID int64, data []by
 		return err
 	}
 	if err = pub.Publish(dstServer, data2); err != nil {
-		log.ErrorDepth(2,"call err:%v.dstSrv:%v", err, dstServer)
+		log.ErrorDepth(2, "call err:%v.dstSrv:%v", err, dstServer)
 	}
 	return err
 }
@@ -82,9 +83,9 @@ func NatsRpc(pub *Nats, dstServer, srcServer string, roleID int64, data []byte) 
 		return nil, err
 	}
 	if ret, err := pub.Call(dstServer, data2, 30000); err != nil {
-		log.ErrorDepth(2,"call err:%v.dstSrv:%v", err, dstServer)
+		log.ErrorDepth(2, "call err:%v.dstSrv:%v", err, dstServer)
 		return nil, err
-	}else{
+	} else {
 		return ret, nil
 	}
 }
@@ -101,6 +102,6 @@ func Marshal(id uint16, msg proto.Message) []byte {
 	return sid
 }
 
-func Unmarshal(data []byte, msg proto.Message) (error) {
+func Unmarshal(data []byte, msg proto.Message) error {
 	return proto.UnmarshalMerge(data, msg)
 }

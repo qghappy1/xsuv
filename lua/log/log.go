@@ -1,8 +1,7 @@
-
 package log
 
 import (
-	log2 "xsuv/util/log"
+	log2 "github.com/qghappy1/xsuv/util/log"
 	"github.com/yuin/gopher-lua"
 )
 
@@ -29,4 +28,3 @@ func RegisterLog(L *lua.LState) {
 	L.SetGlobal("LogInfo", L.NewFunction(logInfo))
 	L.SetGlobal("LogError", L.NewFunction(logError))
 }
-

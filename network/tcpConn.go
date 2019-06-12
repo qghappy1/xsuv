@@ -3,7 +3,8 @@ package network
 import (
 	"net"
 	"sync"
-	"xsuv/util/log"
+
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 type ConnSet map[net.Conn]struct{}

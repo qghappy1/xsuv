@@ -2,11 +2,11 @@ package module
 
 import (
 	"os"
-	"sync"
 	"os/signal"
-	"xsuv/util/log"
-)
+	"sync"
 
+	"github.com/qghappy1/xsuv/util/log"
+)
 
 type modules struct {
 	mi       IModule
@@ -65,7 +65,6 @@ func destroy(m *modules) {
 
 	m.mi.OnDestroy()
 }
-
 
 func Run(mods ...IModule) {
 	log.Info("Server starting")

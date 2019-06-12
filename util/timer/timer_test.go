@@ -1,26 +1,27 @@
 package timer
 
 import (
-	"testing"
 	"sync"
+	"testing"
 	"time"
-	"xsuv/util/log"
+
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 var (
 	once sync.Once
 )
 
-func testTimer(){
+func testTimer() {
 	Start()
-	Tick(1, func(){
+	Tick(1, func() {
 		go log.Debug("1")
 	})
 }
 
 func Test_Timer(t *testing.T) {
 	once.Do(testTimer)
-	for{
+	for {
 		time.Sleep(1)
 	}
 }

@@ -2,25 +2,26 @@ package process
 
 import (
 	"fmt"
-	"time"
-	"strings"
 	"runtime"
-	"xsuv/util/log"
-	"xsuv/util/waitGroup"
+	"strings"
+	"time"
+
+	"github.com/qghappy1/xsuv/util/log"
+	"github.com/qghappy1/xsuv/util/waitGroup"
 )
 
 type tFunc struct {
-	debug	string
-	f		func()
+	debug string
+	f     func()
 }
 
 type Process struct {
-	funcs 		chan *tFunc
-	isrun		bool 
-	debug		string 
+	funcs chan *tFunc
+	isrun bool
+	debug string
 }
 
-func NewProcess() *Process{
+func NewProcess() *Process {
 	p := new(Process)
 	p.funcs = make(chan *tFunc, 1024*1024)
 	p.isrun = false
@@ -33,50 +34,50 @@ func NewProcess() *Process{
 	i := strings.LastIndex(file, "/")
 	file = file[i+1:]
 	p.debug = fmt.Sprintf("%s.%d", file, line)
-	
+
 	p.Run()
-	return p 
+	return p
 }
 
-func (this *Process) Run(){
+func (this *Process) Run() {
 	if this.isrun {
-		return 
+		return
 	}
 	this.isrun = true
-		
-	var lastFunc *tFunc		
-	invoke := func(){
+
+	var lastFunc *tFunc
+	invoke := func() {
 		for {
 			if waitGroup.IsSigStop() {
-				break 
+				break
 			}
-			select{
-			case f, ok := <- this.funcs:
+			select {
+			case f, ok := <-this.funcs:
 				if ok && f != nil && f.f != nil {
 					lastFunc = f
 					f.f()
-				}else{
+				} else {
 					return
 				}
 
 			default:
 				time.Sleep(time.Millisecond * 5)
-			}	
-		}		
+			}
+		}
 	}
-	finish := func(){
+	finish := func() {
 		if lastFunc != nil {
 			log.Error("invoke:%v error. process:%v", lastFunc.debug, this.debug)
-		}			
+		}
 		this.isrun = false
 		this.Run()
 	}
 	waitGroup.GoWrapEx(invoke, finish)
 }
 
-func (this *Process) Post(f func()){
+func (this *Process) Post(f func()) {
 	tf := new(tFunc)
-	tf.f = f 
+	tf.f = f
 
 	_, file, line, ok := runtime.Caller(1)
 	if !ok {
@@ -90,8 +91,6 @@ func (this *Process) Post(f func()){
 	this.funcs <- tf
 }
 
-func (this *Process) Close(){
+func (this *Process) Close() {
 	this.funcs <- nil
 }
-
-

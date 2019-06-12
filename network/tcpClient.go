@@ -4,7 +4,8 @@ import (
 	"net"
 	"sync"
 	"time"
-	"xsuv/util/log"
+
+	"github.com/qghappy1/xsuv/util/log"
 )
 
 type TCPClient struct {
@@ -32,7 +33,7 @@ func (client *TCPClient) Start() {
 
 	for i := 0; i < client.ConnNum; i++ {
 		client.wg.Add(1)
-		time.Sleep(1*time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 		go client.connect()
 	}
 }

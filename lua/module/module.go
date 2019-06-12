@@ -1,16 +1,15 @@
-
 package module
 
 import (
-	"xsuv/module2"
+	"github.com/qghappy1/xsuv/module2"
 	"github.com/yuin/gopher-lua"
 )
 
 var luaModuleMethods = map[string]lua.LGFunction{
-	"name": moduleName,
-	"sendmsg": moduleSendMsg,
+	"name":            moduleName,
+	"sendmsg":         moduleSendMsg,
 	"sendmsg_special": moduleSendMsgSpecial,
-	"rpcmsg": moduleRpcMsg,
+	"rpcmsg":          moduleRpcMsg,
 }
 
 func RegisterModule(L *lua.LState, moduleName string, m module2.IModule) {
